@@ -28,6 +28,8 @@ exports.createUser = async (req, res) => {
     password: req.body.password,
   });
 
+  console.log(req.body.username, req.body.email, req.body.password);
+
   try {
     const newUser = await user.save();
     res.status(201).json(newUser);

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const dbConfig = require("./config/config.js");
 const UserRoute = require("./routes/user");
+const EventRoute = require("./routes/event");
 
 require("dotenv").config();
 
@@ -29,7 +30,8 @@ app.use(
 
 app.use(bodyParser.json());
 
-app.use("/user", UserRoute);
+app.use("/api/user", UserRoute);
+app.use("/api/event", EventRoute);
 
 app.get("/", (req, res) => {
   res.json({
