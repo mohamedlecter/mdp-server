@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const dbConfig = require("./config/config.js");
@@ -32,6 +33,8 @@ app.use(bodyParser.json());
 
 app.use("/api/user", UserRoute);
 app.use("/api/event", EventRoute);
+// Serve uploaded images from the 'uploads' directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.json({
