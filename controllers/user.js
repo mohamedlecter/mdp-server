@@ -1,4 +1,12 @@
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
+
+//jwt sign token function
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
 exports.findAllUsers = async (req, res) => {
   try {
@@ -23,16 +31,46 @@ exports.findOneUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   const user = new User({
-    username: req.body.username,
+    name: req.body.name,
     email: req.body.email,
     password: req.body.password,
   });
 
-  console.log(req.body.username, req.body.email, req.body.password);
+  const token = signToken(user._id);
 
   try {
     const newUser = await user.save();
-    res.status(201).json(newUser);
+
+    res.status(201).json({
+      status: "success",
+      token,
+      data: {
+        user: newUser,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.adminSignup = async (req, res) => {
+  const admin = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    isAdmin: true,
+  });
+  //assign token to user
+  const token = signToken(admin._id);
+  try {
+    const newAdmin = await admin.save();
+    res.status(201).json({
+      status: "success",
+      token,
+      data: {
+        user: newAdmin,
+      },
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -49,7 +87,46 @@ exports.loginUser = async (req, res) => {
     if (user.password !== password || user.email !== email) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    res.status(200).json(user);
+    //assign toke to user
+    const token = signToken(user._id);
+
+    res.status(200).json({
+      status: "success",
+      token,
+      data: {
+        user: user,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const admin = await User.findOne({
+      email: email,
+      password: password,
+      isAdmin: true,
+    });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    if (admin.password !== password || admin.email !== email) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    //assign toke to user
+    const token = signToken(admin._id);
+
+    res.status(200).json({
+      status: "success",
+      token,
+      data: {
+        user: admin,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
