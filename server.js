@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const dbConfig = require("./config/config.js");
 const UserRoute = require("./routes/user");
 const EventRoute = require("./routes/event");
+const JobRoute = require("./routes/job");
 
 require("dotenv").config();
 
@@ -33,6 +34,7 @@ app.use(bodyParser.json());
 
 app.use("/api/user", UserRoute);
 app.use("/api/event", EventRoute);
+app.use("/api/job", JobRoute);
 // Serve uploaded images from the 'uploads' directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
