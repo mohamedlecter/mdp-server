@@ -63,18 +63,9 @@ exports.createEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findById(
-      req.params.id,
-      (eventOrganizerId = req.user._id)
-    );
+    const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
-    }
-    if (post.authorId.toString() !== req.user.id) {
-      return res.status(401).json({
-        status: "Fail",
-        message: `You can only delete a post you created!`,
-      });
     }
 
     const user = await User.findById(req.user._id);

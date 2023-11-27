@@ -27,6 +27,6 @@ router.post(
   EventController.createEvent
 );
 router.patch("/:id", EventController.updateEvent);
-router.delete("/:id", EventController.deleteEvent);
+router.delete("/:id", authenticate, EventController.deleteEvent);
 
 module.exports = router;
