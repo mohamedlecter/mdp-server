@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 //jwt sign token function
 const signToken = (id) => {
@@ -80,14 +81,18 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email: email, password: password });
+    const user = await User.findOne({ email: email.toLowerCase() });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    if (user.password !== password || user.email !== email) {
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    //assign toke to user
+
     const token = signToken(user._id);
 
     res.status(200).json({
@@ -107,17 +112,20 @@ exports.adminLogin = async (req, res) => {
 
   try {
     const admin = await User.findOne({
-      email: email,
-      password: password,
+      email: email.toLowerCase(),
       isAdmin: true,
     });
+
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-    if (admin.password !== password || admin.email !== email) {
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    //assign toke to user
+
     const token = signToken(admin._id);
 
     res.status(200).json({

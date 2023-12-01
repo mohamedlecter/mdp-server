@@ -24,17 +24,30 @@ exports.findOneEvent = async (req, res) => {
 };
 exports.createEvent = async (req, res) => {
   try {
-    const { title, description, date, location } = req.body;
+    const { title, description, date, location, time } = req.body;
     const eventImg = req.file.path;
 
     // eventOrganizer and eventOrganizerId are derived from the authenticated user
     const eventOrganizer = req.user.name;
     const eventOrganizerId = req.user._id;
 
+    // Parse and format the incoming date
+    const eventDate = new Date(date);
+    const formattedDate = eventDate.toISOString().split("T")[0];
+    const formattedDay = eventDate.getDate(); // Day of the month (1-31)
+    const formattedMonth = eventDate.toLocaleString("en-US", {
+      month: "short",
+    }); // Short month name (e.g., Oct)
+    const formattedYear = eventDate.getFullYear();
+
     const event = new Event({
       title,
       description,
-      date,
+      date: formattedDate,
+      day: formattedDay,
+      month: formattedMonth,
+      year: formattedYear,
+      time,
       location,
       eventImg,
       eventOrganizer,
@@ -85,12 +98,22 @@ exports.updateEvent = async (req, res) => {
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
+    // Parse and format the incoming date
+    const eventDate = new Date(req.body.date);
+    const formattedDate = eventDate.toISOString().split("T")[0];
+    const formattedDay = eventDate.getDate();
+    const formattedTime = eventDate.getHours();
+
     event.title = req.body.title;
     event.description = req.body.description;
-    event.date = req.body.date;
+    event.date = formattedDate;
+    event.day = formattedDay;
+    event.time = formattedTime;
     event.location = req.body.location;
     event.attendees = req.body.attendees;
     event.createdBy = req.body.createdBy;
+
     await event.save();
     res.status(200).json(event);
   } catch (err) {
