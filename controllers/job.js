@@ -34,9 +34,17 @@ exports.findOneJob = async (req, res) => {
 
 exports.createJob = async (req, res) => {
   try {
-    const { title, description, location, company, salary, createdAt } =
-      req.body;
-    const jobImg = req.file.path;
+    const {
+      title,
+      description,
+      location,
+      company,
+      salary,
+      jobDurationStart,
+      jobDurationEnd,
+      jobHourStart,
+      jobHourEnd,
+    } = req.body;
     const jobOrganizer = req.user.name;
     const jobOrganizerId = req.user._id;
 
@@ -44,10 +52,12 @@ exports.createJob = async (req, res) => {
       title,
       description,
       location,
-      jobImg,
       company,
       salary,
-      createdAt,
+      jobDurationStart,
+      jobDurationEnd,
+      jobHourStart,
+      jobHourEnd,
       jobOrganizerId,
       jobOrganizer,
     });

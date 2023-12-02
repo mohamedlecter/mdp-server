@@ -21,11 +21,19 @@ const jobSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  jobDurationStart: {
+    type: String,
+    required: true,
   },
-  jobImg: {
+  jobDurationEnd: {
+    type: String,
+    required: true,
+  },
+  jobHourStart: {
+    type: String,
+    required: true,
+  },
+  jobHourEnd: {
     type: String,
     required: true,
   },
