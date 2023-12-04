@@ -22,8 +22,12 @@ const eventSchema = new mongoose.Schema({
   year: {
     type: Number,
   },
-  time: {
-    type: Number,
+  eventTimeStart: {
+    type: String,
+    required: true,
+  },
+  eventTimeEnd: {
+    type: String,
     required: true,
   },
   location: {

@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get("/", EventController.findAllEvents);
-router.get("/user/:userId", EventController.findEventsByUser); // New router to get all events by a user
+router.get("/user/:userId", authenticate, EventController.findEventsByUser); // New router to get all events by a user
 router.get("/:id", EventController.findOneEvent);
 router.post(
   "/",
