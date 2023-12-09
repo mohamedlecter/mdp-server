@@ -7,7 +7,7 @@ router.get("/", JobController.findAllJobs);
 router.get("/user/:userId", JobController.findJobsByUser); // New router to get all jobs by a user
 router.get("/:id", JobController.findOneJob);
 router.post("/", authenticate, JobController.createJob);
-router.patch("/:id", JobController.updateJob);
-router.delete("/:id", JobController.deleteJob);
+router.patch("/:id", authenticate, JobController.updateJob);
+router.delete("/:id", authenticate, JobController.deleteJob);
 
 module.exports = router;

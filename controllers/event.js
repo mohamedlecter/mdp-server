@@ -22,32 +22,29 @@ exports.findOneEvent = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// Update the route handler
 exports.createEvent = async (req, res) => {
   try {
-    const { title, description, date, location, eventTimeStart, eventTimeEnd } =
-      req.body;
+    const {
+      title,
+      description,
+      startDate,
+      finishDate,
+      location,
+      eventTimeStart,
+      eventTimeEnd,
+    } = req.body;
     const eventImg = req.file.path;
 
     // eventOrganizer and eventOrganizerId are derived from the authenticated user
     const eventOrganizer = req.user.name;
     const eventOrganizerId = req.user._id;
 
-    // Parse and format the incoming date
-    const eventDate = new Date(date);
-    const formattedDate = eventDate.toISOString().split("T")[0];
-    const formattedDay = eventDate.getDate(); // Day of the month (1-31)
-    const formattedMonth = eventDate.toLocaleString("en-US", {
-      month: "short",
-    }); // Short month name (e.g., Oct)
-    const formattedYear = eventDate.getFullYear();
-
     const event = new Event({
       title,
       description,
-      date: formattedDate,
-      day: formattedDay,
-      month: formattedMonth,
-      year: formattedYear,
+      startDate,
+      finishDate,
       eventTimeStart,
       eventTimeEnd,
       location,
@@ -71,7 +68,7 @@ exports.createEvent = async (req, res) => {
       newEvent,
     });
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error("erorr here", err); // Log the error for debugging
     res.status(400).json({ message: err.message });
   }
 };
