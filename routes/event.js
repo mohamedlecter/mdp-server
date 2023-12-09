@@ -26,7 +26,12 @@ router.post(
   authenticate,
   EventController.createEvent
 );
-router.patch("/:id", EventController.updateEvent);
+router.patch(
+  "/:id",
+  authenticate,
+  upload.single("eventImg"),
+  EventController.updateEvent
+);
 router.delete("/:id", authenticate, EventController.deleteEvent);
 
 module.exports = router;

@@ -91,42 +91,20 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
-exports.updateEvent = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: "Event not found" });
+exports.updateEvent = [
+  async (req, res) => {
+    try {
+      const updatedEvent = await Event.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      res.status(200).json(updatedEvent);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    const { title, description, date, location, eventTimeStart, eventTimeEnd } =
-      req.body;
-    const eventDate = new Date(date);
-    const formattedDate = eventDate.toISOString().split("T")[0];
-    const formattedDay = eventDate.getDate();
-    const formattedMonth = eventDate.toLocaleString("en-US", {
-      month: "short",
-    });
-    const formattedYear = eventDate.getFullYear();
-
-    const eventImg = req.file.path;
-
-    event.title = title;
-    event.description = description;
-    event.date = formattedDate;
-    event.day = formattedDay;
-    event.month = formattedMonth;
-    event.year = formattedYear;
-    event.location = location;
-    event.eventTimeStart = eventTimeStart;
-    event.eventTimeEnd = eventTimeEnd;
-    event.eventImg = eventImg;
-
-    await event.save();
-    res.status(200).json(event);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  },
+];
 
 exports.findEventsByUser = async (req, res) => {
   try {
